@@ -27,6 +27,10 @@ function App() {
   );
 }
 
+// function Projects() {
+//   return <div>Projects Page (to be implemented)</div>;
+// }
+
 function Inventory() {
   return <div>Inventory Page (to be implemented)</div>;
 }

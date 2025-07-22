@@ -42,12 +42,12 @@ mongoose
 app.use("/api/auth", authRoutes); //(no authMiddleware)
 
 // Protected routes
-app.use('/api/customers', authMiddleware, customerRoutes);
-app.use('/api/quotes', authMiddleware, quoteRoutes);
-app.use('/api/subsidies', authMiddleware, subsidyRoutes);
-app.use('/api/projects', authMiddleware, projectRoutes);
-app.use('/api/inventory', authMiddleware, inventoryRoutes);
-app.use('/api/dashboard', authMiddleware, dashboardRoutes);
+app.use('/api/customers',  customerRoutes);
+app.use('/api/quotes',  quoteRoutes);
+app.use('/api/subsidies',  subsidyRoutes);
+app.use('/api/projects',  projectRoutes);
+app.use('/api/inventory',  inventoryRoutes);
+app.use('/api/dashboard',  dashboardRoutes);
 
 // Test route
 app.get("/api/test", (req, res) => {
