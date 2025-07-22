@@ -6,28 +6,31 @@ import { Button } from './ui/button';
 import { Label } from './ui/label';
 import { cn } from '@/lib/utils';
 
-function CustomerForm({ onAdd }) {
-  const [name, setName] = useState('');
-  const [contact, setContact] = useState('');
-  const [energyNeeds, setEnergyNeeds] = useState('');
+function EditCustomerForm({ customer, onUpdate }) {
+  const [name, setName] = useState(customer.name);
+  const [contact, setContact] = useState(customer.contact);
+  const [energyNeeds, setEnergyNeeds] = useState(customer.energyNeeds || '');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/api/customers', { name, contact, energyNeeds: Number(energyNeeds) });
-      setMessage(`Added customer: ${res.data.name}`);
-      setName(''); setContact(''); setEnergyNeeds('');
-      onAdd();
+      const res = await axios.put(`/api/customers/${customer._id}`, {
+        name,
+        contact,
+        energyNeeds: Number(energyNeeds) || undefined,
+      });
+      setMessage(`Updated customer: ${res.data.name}`);
+      onUpdate();
     } catch (err) {
-      setMessage('Error adding customer');
+      setMessage('Error updating customer');
     }
   };
 
   return (
     <Card className="max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>Add Customer</CardTitle>
+        <CardTitle>Edit Customer</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -57,10 +60,11 @@ function CustomerForm({ onAdd }) {
               id="energyNeeds"
               type="number"
               value={energyNeeds}
-              onChange={(e) => setEnergyNeeds(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
+              required
             />
           </div>
-          <Button type="submit" className="w-full">Add Customer</Button>
+          <Button type="submit" className="w-full">Update Customer</Button>
         </form>
         {message && (
           <p className={cn('mt-4 text-sm', message.includes('Error') ? 'text-destructive' : 'text-green-600')}>
@@ -72,4 +76,4 @@ function CustomerForm({ onAdd }) {
   );
 }
 
-export default CustomerForm;
+export default EditCustomerForm;
