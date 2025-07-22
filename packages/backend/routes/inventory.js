@@ -36,6 +36,18 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// DELETE an item by ID
+router.delete('/:id', async (req, res) => {
+  try {
+    const item = await Inventory.findById(req.params.id);
+    if (!item) return res.status(404).json({ message: 'Item not found' });
+    await item.deleteOne();
+    res.json({ message: 'Item deleted' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // GET low-stock alerts
 router.get('/low-stock', async (req, res) => {
   try {

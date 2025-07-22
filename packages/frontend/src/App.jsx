@@ -5,6 +5,7 @@ import CRM from '@/pages/CRM';
 import Quotes from '@/pages/Quotes';
 import Subsidies from '@/pages/Subsidies';
 import Projects from '@/pages/Projects';
+import Inventory from '@/pages/Inventory';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 function App() {
@@ -25,14 +26,6 @@ function App() {
       </Routes>
     </Router>
   );
-}
-
-// function Projects() {
-//   return <div>Projects Page (to be implemented)</div>;
-// }
-
-function Inventory() {
-  return <div>Inventory Page (to be implemented)</div>;
 }
 
 function Settings() {
