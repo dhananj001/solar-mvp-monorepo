@@ -8,6 +8,7 @@ const quoteRoutes = require('./routes/quotes');
 const subsidyRoutes = require('./routes/subsidies');
 const projectRoutes = require('./routes/projects');
 const inventoryRoutes = require('./routes/inventory');
+const dashboardRoutes = require('./routes/dashboard'); 
 
 // Load .env from root
 dotenv.config({ path: require('path').resolve(__dirname, '../../.env') });
@@ -40,6 +41,7 @@ app.use('/api/quotes', quoteRoutes);
 app.use('/api/subsidies', subsidyRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/inventory', inventoryRoutes);
+app.use('/api/dashboard', dashboardRoutes); 
 
 // Test route
 app.get('/api/test', (req, res) => {
