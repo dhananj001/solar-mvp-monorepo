@@ -3,6 +3,7 @@ import DashboardLayout from '@/layout/DashboardLayout';
 import Dashboard from '@/pages/Dashboard';
 import CRM from '@/pages/CRM';
 import Quotes from '@/pages/Quotes';
+import Subsidies from '@/pages/Subsidies';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 function App() {
@@ -23,10 +24,6 @@ function App() {
       </Routes>
     </Router>
   );
-}
-
-function Subsidies() {
-  return <div>Subsidies Page (to be implemented)</div>;
 }
 
 function Projects() {
