@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import DashboardLayout from '@/layout/DashboardLayout';
 import Dashboard from '@/pages/Dashboard';
 import CRM from '@/pages/CRM';
+import Quotes from '@/pages/Quotes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 function App() {
@@ -22,10 +23,6 @@ function App() {
       </Routes>
     </Router>
   );
-}
-
-function Quotes() {
-  return <div>Quotes Page (to be implemented)</div>;
 }
 
 function Subsidies() {
