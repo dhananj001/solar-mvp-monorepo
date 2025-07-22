@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import DashboardLayout from '@/layout/DashboardLayout';
 import Dashboard from '@/pages/Dashboard';
+import CRM from '@/pages/CRM';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 function App() {
@@ -21,10 +22,6 @@ function App() {
       </Routes>
     </Router>
   );
-}
-
-function CRM() {
-  return <div>CRM Page (to be implemented)</div>;
 }
 
 function Quotes() {

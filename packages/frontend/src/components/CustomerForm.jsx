@@ -1,33 +1,48 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Input } from './ui/input';
-import { Button } from './ui/button';
-import { Label } from './ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
-function CustomerForm({ onAdd }) {
-  const [name, setName] = useState('');
-  const [contact, setContact] = useState('');
-  const [energyNeeds, setEnergyNeeds] = useState('');
+function CustomerForm({ customer, onSubmit, onCancel }) {
+  const [name, setName] = useState(customer?.name || '');
+  const [contact, setContact] = useState(customer?.contact || '');
+  const [energyNeeds, setEnergyNeeds] = useState(customer?.energyNeeds || '');
+  const [type, setType] = useState(customer?.type || 'residential');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/api/customers', { name, contact, energyNeeds: Number(energyNeeds) });
-      setMessage(`Added customer: ${res.data.name}`);
-      setName(''); setContact(''); setEnergyNeeds('');
-      onAdd();
+      const payload = { name, contact, energyNeeds: Number(energyNeeds) || 0, type };
+      const token = localStorage.getItem('token');
+      if (customer) {
+        await axios.put(`/api/customers/${customer._id}`, payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setMessage('Customer updated');
+      } else {
+        await axios.post('/api/customers', payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setMessage('Customer added');
+      }
+      setName('');
+      setContact('');
+      setEnergyNeeds('');
+      setType('residential');
+      onSubmit();
     } catch (err) {
-      setMessage('Error adding customer');
+      setMessage('Error saving customer');
     }
   };
 
   return (
     <Card className="max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>Add Customer</CardTitle>
+        <CardTitle>{customer ? 'Edit Customer' : 'Add Customer'}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -60,7 +75,26 @@ function CustomerForm({ onAdd }) {
               onChange={(e) => setEnergyNeeds(e.target.value)}
             />
           </div>
-          <Button type="submit" className="w-full">Add Customer</Button>
+          <div className="space-y-2">
+            <Label htmlFor="type">Type</Label>
+            <select
+              id="type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="residential">Residential</option>
+              <option value="commercial">Commercial</option>
+            </select>
+          </div>
+          <div className="flex space-x-2">
+            <Button type="submit" className="w-full">{customer ? 'Update' : 'Add'} Customer</Button>
+            {customer && (
+              <Button type="button" variant="outline" onClick={onCancel} className="w-full">
+                Cancel
+              </Button>
+            )}
+          </div>
         </form>
         {message && (
           <p className={cn('mt-4 text-sm', message.includes('Error') ? 'text-destructive' : 'text-green-600')}>
