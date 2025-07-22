@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import DashboardLayout from '@/layout/DashboardLayout';
+import Dashboard from '@/pages/Dashboard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 function App() {
@@ -15,23 +16,10 @@ function App() {
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/logout" element={<Logout />} />
-          <Route path="/" element={<Dashboard />} /> {/* Redirect to dashboard */}
+          <Route path="/" element={<Dashboard />} />
         </Route>
       </Routes>
     </Router>
-  );
-}
-
-function Dashboard() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Dashboard</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground">Welcome to the Solar Business Dashboard</p>
-      </CardContent>
-    </Card>
   );
 }
 
