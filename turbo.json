@@ -1,0 +1,12 @@
+{
+  "pipeline": {
+    "dev": {
+      "cache": false 
+    },
+    "build": {
+      "outputs": ["dist/**"]
+    }
+  },
+  "globalDependencies": [".env"],
+  "packageManager": "pnpm@9.6.0"  
+}

@@ -1,0 +1,2 @@
+packages:
+  - 'packages/*'  # All subfolders in /packages are workspaces
