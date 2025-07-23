@@ -2,12 +2,6 @@ import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from '@/components/ui/navigation-menu';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -36,11 +30,13 @@ import {
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
+// ---------- Utility ----------
 function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-function DashboardLayout() {
+// ---------- Layout ----------
+export default function DashboardLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
   const location = useLocation();
@@ -55,53 +51,48 @@ function DashboardLayout() {
     { href: '/inventory', label: 'Inventory', icon: Box },
   ];
 
-  function handleLogout() {
+  const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/login');
-  }
+  };
 
   return (
-    <div className="h-screen w-screen flex bg-slate-50 overflow-hidden">
-      {/* ---------- Sidebar (fixed, never scrolls) ---------- */}
+    <div className="h-screen w-screen flex bg-gray-50 overflow-hidden">
+      {/* ---------- Sidebar ---------- */}
       <aside
         className={cn(
-          'flex flex-col shrink-0 bg-gradient-to-b from-white via-white to-sky-50/40 border-r border-slate-200/60 shadow-xl transition-all duration-300 z-40',
-          isCompact ? 'w-20' : 'w-72',
-          'md:translate-x-0',
+          'flex flex-col shrink-0 bg-white border-r border-gray-200 transition-all duration-300 z-40',
+          isCompact ? 'w-20' : 'w-64',
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >
-        {/* Header */}
+        {/* Logo */}
         <div className="flex items-center justify-between px-5 py-4 h-16 shrink-0">
           <div className="flex items-center">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-400 blur-sm opacity-80" />
-              <div className="relative h-9 w-9 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
-                <span className="font-bold text-lg bg-gradient-to-br from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  S
-                </span>
-              </div>
+            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-blue-700 text-white font-bold">
+              S
             </div>
             {!isCompact && (
-              <h1 className="ml-3 text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-500">
+              <span className="ml-3 text-lg font-semibold text-gray-900">
                 Solar Business
-              </h1>
+              </span>
             )}
           </div>
+
           <Button
             variant="ghost"
             size="icon"
             className="md:hidden"
             onClick={() => setIsSidebarOpen(false)}
           >
-            <Menu className="h-5 w-5 text-slate-600" />
+            <Menu className="h-5 w-5 text-gray-600" />
           </Button>
         </div>
 
-        <Separator className="bg-slate-200/50 shrink-0" />
+        <Separator />
 
-        {/* Scrollable nav */}
-        <nav className="flex-1 overflow-y-auto px-3 py-3">
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto px-3 py-4">
           <ul className="space-y-1">
             {navItems.map(({ href, label, icon: Icon }) => {
               const active = location.pathname === href;
@@ -110,15 +101,20 @@ function DashboardLayout() {
                   <Link
                     to={href}
                     className={cn(
-                      'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all',
+                      'flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors',
                       active
-                        ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-500/20 scale-[1.02]'
-                        : 'text-slate-600 hover:bg-white/80 hover:text-slate-900 hover:shadow-sm',
+                        ? 'bg-blue-50 text-blue-700'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
                       isCompact && 'justify-center'
                     )}
                   >
-                    <Icon className="h-5 w-5 shrink-0" />
-                    {!isCompact && <span className="leading-none">{label}</span>}
+                    <Icon
+                      className={cn(
+                        'h-5 w-5 shrink-0',
+                        active ? 'text-blue-600' : 'text-gray-400'
+                      )}
+                    />
+                    {!isCompact && <span>{label}</span>}
                   </Link>
                 </li>
               );
@@ -127,51 +123,51 @@ function DashboardLayout() {
         </nav>
 
         {/* Collapse toggle */}
-        <div className="shrink-0 border-t border-slate-200/50 p-3">
+        <div className="shrink-0 border-t border-gray-200 p-3">
           <Button
             variant="ghost"
             size="sm"
             className={cn(
-              'w-full flex items-center justify-center text-slate-500 hover:bg-white/70 hover:shadow-sm rounded-xl',
+              'w-full flex items-center justify-center text-gray-500 hover:bg-gray-100',
               isCompact && 'px-0'
             )}
             onClick={() => setIsCompact(!isCompact)}
           >
             {isCompact ? (
-              <ChevronsRight className="h-5 w-5 text-indigo-500" />
+              <ChevronsRight className="h-5 w-5" />
             ) : (
               <>
-                <ChevronsLeft className="h-5 w-5 mr-2 text-indigo-500" />
-                <span className="text-sm font-medium">Collapse</span>
+                <ChevronsLeft className="h-5 w-5 mr-2" />
+                Collapse
               </>
             )}
           </Button>
         </div>
       </aside>
 
-      {/* ---------- Main area (header + content) ---------- */}
+      {/* ---------- Main ---------- */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="flex items-center justify-between h-16 px-6 shrink-0 bg-white/40 backdrop-blur-xl border-b border-slate-200/40 shadow-sm">
+        <header className="flex items-center justify-between h-16 px-6 shrink-0 bg-white border-b border-gray-200">
           <Button
             variant="ghost"
             size="icon"
             className="md:hidden"
             onClick={() => setIsSidebarOpen(true)}
           >
-            <Menu className="h-6 w-6 text-slate-700" />
+            <Menu className="h-6 w-6 text-gray-700" />
           </Button>
 
           <div className="flex items-center gap-3 ml-auto">
-            <Button variant="ghost" size="icon" className="relative hover:bg-white/60 rounded-full">
-              <Bell className="h-5 w-5 text-slate-600" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-gradient-to-tr from-red-500 to-pink-500 shadow" />
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-5 w-5 text-gray-600" />
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/60">
-                  <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-400 shadow-md" />
+                <Button variant="ghost" size="icon">
+                  <div className="h-9 w-9 rounded-full bg-gray-300" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
@@ -197,13 +193,13 @@ function DashboardLayout() {
           </div>
         </header>
 
-        {/* Page content */}
+        {/* Page */}
         <main className="flex-1 overflow-y-auto p-6">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35 }}
-            className="bg-white/60 backdrop-blur-lg border border-slate-200/50 rounded-2xl shadow-xl shadow-slate-300/20 p-8"
+            transition={{ duration: 0.3 }}
+            className="bg-white border border-gray-200 rounded-lg shadow-sm p-6"
           >
             <Outlet />
           </motion.div>
@@ -212,5 +208,3 @@ function DashboardLayout() {
     </div>
   );
 }
-
-export default DashboardLayout;
