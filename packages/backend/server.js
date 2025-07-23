@@ -23,6 +23,12 @@ dotenv.config({ path: require("path").resolve(__dirname, "../../.env") });
 
 const app = express();
 
+// const allowedOrigins = [
+//   'http://localhost:5173',
+//   'https://solar-mvp-monorepo-frontend-r4p3vohi8.vercel.app',
+//   'https://solar-mvp-monorepo.vercel.app',
+// ];
+
 // Middleware
 app.use(helmet()); // Secure HTTP headers (latest helmet 8.0.0 features)
 // app.use(cors({ origin: "http://localhost:5173" })); // Allow Vite frontend
@@ -76,5 +82,5 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 );
