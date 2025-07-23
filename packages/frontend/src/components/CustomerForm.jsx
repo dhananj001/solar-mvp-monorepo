@@ -21,6 +21,7 @@ export default function CustomerForm({ customer, onSubmit, onCancel }) {
   const [type, setType] = useState(customer?.type ?? "residential");
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -35,12 +36,19 @@ export default function CustomerForm({ customer, onSubmit, onCancel }) {
       };
 
       if (customer?._id) {
-        await axios.put(`/api/customers/${customer._id}`, payload, {
+        // await axios.put(`/api/customers/${customer._id}`, payload, {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // });
+        await axios.put(`${API_BASE_URL}/api/customers/${customer._id}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         setMsg("Updated successfully");
       } else {
-        await axios.post("/api/customers", payload, {
+        // await axios.post("/api/customers", payload, {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // });
+        await axios.post(`${API_BASE_URL}/api/customers`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMsg("Created successfully");
