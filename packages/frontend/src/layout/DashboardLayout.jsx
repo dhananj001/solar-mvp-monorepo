@@ -11,7 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Separator } from '@/components/ui/separator';
 
 import {
   Home,
@@ -21,12 +20,9 @@ import {
   Calendar,
   Box,
   Bell,
-  Menu,
-  X,
   Settings as SettingsIcon,
   LogOut as LogOutIcon,
 } from 'lucide-react';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 function cn(...inputs) {
@@ -34,11 +30,10 @@ function cn(...inputs) {
 }
 
 export default function DashboardLayout() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
-  const navItems = [
+  const dockItems = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/crm', label: 'CRM', icon: Users },
     { href: '/quotes', label: 'Quotes', icon: Calculator },
@@ -53,57 +48,77 @@ export default function DashboardLayout() {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-gray-50 overflow-hidden">
-      {/* ---------- Top Bar (always visible) ---------- */}
-      <header className="flex items-center justify-between h-16 px-4 sm:px-6 bg-white border-b border-gray-200 z-30 shrink-0">
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-md bg-blue-700 flex items-center justify-center text-white font-bold shrink-0">
-            S
-          </div>
-          <span className="hidden sm:block text-lg font-semibold text-gray-900">
-            Solar Business
-          </span>
-        </div>
+    <div className="h-screen w-screen flex flex-col bg-gray-100 text-black">
+      {/* ---------- Page Content ---------- */}
+      <main className="flex-1 overflow-y-auto pb-32">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="p-4 sm:p-6"
+        >
+          <Outlet />
+        </motion.div>
+      </main>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-1">
-          {navItems.map(({ href, label, icon: Icon }) => {
+      {/* ---------- Dark-Glass Dock ---------- */}
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+        <div className="flex items-end gap-2 sm:gap-3 px-3 py-2 rounded-2xl bg-slate-900/70 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
+          {dockItems.map(({ href, icon: Icon, label }) => {
             const active = location.pathname === href;
             return (
               <Link
                 key={href}
                 to={href}
-                className={cn(
-                  'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                  active
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                )}
+                className="flex flex-col items-center gap-1 w-16 sm:w-20"
               >
-                <Icon className="h-4 w-4 shrink-0" />
-                <span>{label}</span>
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={cn(
+                    'flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl transition-colors',
+                    active
+                      ? 'bg-blue-500 text-white'
+                      : 'text-slate-300 hover:bg-slate-700/50'
+                  )}
+                >
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                </motion.div>
+                <span className="text-[10px] sm:text-xs text-slate-300 font-medium">
+                  {label}
+                </span>
               </Link>
             );
           })}
-        </nav>
 
-        {/* Right Controls */}
-        <div className="flex items-center gap-2 sm:gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative hidden sm:inline-flex"
-          >
-            <Bell className="h-5 w-5 text-gray-600" />
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
-          </Button>
+          {/* Notifications */}
+          <div className="flex flex-col items-center gap-1 w-16 sm:w-20">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl text-slate-300 hover:bg-slate-700/50"
+            >
+              <Bell className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+            </motion.button>
+            <span className="text-[10px] sm:text-xs text-slate-300 font-medium">
+              Alerts
+            </span>
+          </div>
 
+          {/* Profile */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <div className="h-9 w-9 rounded-full bg-gray-300" />
-              </Button>
+              <div className="flex flex-col items-center gap-1 w-16 sm:w-20">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-slate-600"
+                />
+                <span className="text-[10px] sm:text-xs text-slate-300 font-medium">
+                  Profile
+                </span>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -123,75 +138,8 @@ export default function DashboardLayout() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* Mobile Menu Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </Button>
         </div>
-      </header>
-
-      {/* ---------- Mobile Drawer ---------- */}
-      {mobileMenuOpen && (
-        <motion.div
-          initial={{ y: -10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -10, opacity: 0 }}
-          className="md:hidden bg-white border-b border-gray-200 shadow-lg z-20"
-        >
-          <nav className="flex flex-col p-3 space-y-1">
-            {navItems.map(({ href, label, icon: Icon }) => {
-              const active = location.pathname === href;
-              return (
-                <Link
-                  key={href}
-                  to={href}
-                  className={cn(
-                    'flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors',
-                    active
-                      ? 'bg-blue-50 text-blue-700'
-                      : 'text-gray-600 hover:bg-gray-100'
-                  )}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Icon className="h-5 w-5 shrink-0" />
-                  <span>{label}</span>
-                </Link>
-              );
-            })}
-            <Separator />
-            <Button
-              variant="ghost"
-              className="flex items-center gap-3 justify-start"
-              onClick={handleLogout}
-            >
-              <LogOutIcon className="h-5 w-5" />
-              Logout
-            </Button>
-          </nav>
-        </motion.div>
-      )}
-
-      {/* ---------- Page Content ---------- */}
-      <main className="flex-1 overflow-y-auto p-4 sm:p-6">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 sm:p-6"
-        >
-          <Outlet />
-        </motion.div>
-      </main>
+      </div>
     </div>
   );
 }
