@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import DashboardLayout from '@/layout/DashboardLayout';
 import Dashboard from '@/pages/Dashboard';
 import CRM from '@/pages/CRM';
@@ -8,6 +8,8 @@ import Projects from '@/pages/Projects';
 import Inventory from '@/pages/Inventory';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
+import Logout from '@/pages/Logout';
+import Settings from '@/pages/Settings';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -17,6 +19,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/logout" element={<Logout />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
@@ -26,21 +29,13 @@ function App() {
             <Route path="/projects" element={<Projects />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/logout" element={<Logout />} />
             <Route path="/" element={<Dashboard />} />
           </Route>
         </Route>
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   );
-}
-
-function Settings() {
-  return <div>Settings Page (to be implemented)</div>;
-}
-
-function Logout() {
-  return <div>Logout Page (to be implemented)</div>;
 }
 
 export default App;
