@@ -56,9 +56,7 @@ function DashboardLayout() {
   ];
 
   function handleLogout() {
-    // Clear user session / auth tokens here
     localStorage.removeItem('token');
-    // Redirect to login page
     navigate('/login');
   }
 
@@ -67,8 +65,8 @@ function DashboardLayout() {
       {/* ---------- Sidebar (fixed, never scrolls) ---------- */}
       <aside
         className={cn(
-          'flex flex-col shrink-0 bg-white/70 backdrop-blur-xl border-r border-slate-200/50 shadow-lg transition-all duration-300 z-40',
-          isCompact ? 'w-20' : 'w-64',
+          'flex flex-col shrink-0 bg-gradient-to-b from-white via-white to-sky-50/40 border-r border-slate-200/60 shadow-xl transition-all duration-300 z-40',
+          isCompact ? 'w-20' : 'w-72',
           'md:translate-x-0',
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
@@ -76,11 +74,16 @@ function DashboardLayout() {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 h-16 shrink-0">
           <div className="flex items-center">
-            <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center shadow-sm">
-              <span className="text-white font-bold text-lg">S</span>
+            <div className="relative">
+              <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-400 blur-sm opacity-80" />
+              <div className="relative h-9 w-9 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                <span className="font-bold text-lg bg-gradient-to-br from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                  S
+                </span>
+              </div>
             </div>
             {!isCompact && (
-              <h1 className="ml-3 text-lg font-semibold text-slate-800 tracking-tight">
+              <h1 className="ml-3 text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-500">
                 Solar Business
               </h1>
             )}
@@ -104,46 +107,41 @@ function DashboardLayout() {
               const active = location.pathname === href;
               return (
                 <li key={href}>
-                  <a
-                    href={href}
+                  <Link
+                    to={href}
                     className={cn(
-                      'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
+                      'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all',
                       active
-                        ? 'bg-indigo-50 text-indigo-600 shadow-sm'
-                        : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900',
+                        ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-500/20 scale-[1.02]'
+                        : 'text-slate-600 hover:bg-white/80 hover:text-slate-900 hover:shadow-sm',
                       isCompact && 'justify-center'
                     )}
                   >
-                    <Icon
-                      className={cn(
-                        'h-5 w-5 shrink-0',
-                        active ? 'text-indigo-500' : 'text-slate-400'
-                      )}
-                    />
+                    <Icon className="h-5 w-5 shrink-0" />
                     {!isCompact && <span className="leading-none">{label}</span>}
-                  </a>
+                  </Link>
                 </li>
               );
             })}
           </ul>
         </nav>
 
-        {/* Collapse toggle stuck at visual bottom */}
+        {/* Collapse toggle */}
         <div className="shrink-0 border-t border-slate-200/50 p-3">
           <Button
             variant="ghost"
             size="sm"
             className={cn(
-              'w-full flex items-center justify-center text-slate-500 hover:bg-slate-100/70',
+              'w-full flex items-center justify-center text-slate-500 hover:bg-white/70 hover:shadow-sm rounded-xl',
               isCompact && 'px-0'
             )}
             onClick={() => setIsCompact(!isCompact)}
           >
             {isCompact ? (
-              <ChevronsRight className="h-5 w-5" />
+              <ChevronsRight className="h-5 w-5 text-indigo-500" />
             ) : (
               <>
-                <ChevronsLeft className="h-5 w-5 mr-2" />
+                <ChevronsLeft className="h-5 w-5 mr-2 text-indigo-500" />
                 <span className="text-sm font-medium">Collapse</span>
               </>
             )}
@@ -153,8 +151,8 @@ function DashboardLayout() {
 
       {/* ---------- Main area (header + content) ---------- */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Header (fixed, never scrolls) */}
-        <header className="flex items-center justify-between h-16 px-5 shrink-0 bg-white/60 backdrop-blur-xl border-b border-slate-200/50">
+        {/* Header */}
+        <header className="flex items-center justify-between h-16 px-6 shrink-0 bg-white/40 backdrop-blur-xl border-b border-slate-200/40 shadow-sm">
           <Button
             variant="ghost"
             size="icon"
@@ -165,27 +163,20 @@ function DashboardLayout() {
           </Button>
 
           <div className="flex items-center gap-3 ml-auto">
-            <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" className="relative hover:bg-white/60 rounded-full">
               <Bell className="h-5 w-5 text-slate-600" />
-              <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" />
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-gradient-to-tr from-red-500 to-pink-500 shadow" />
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-indigo-500 to-blue-500 shadow-sm" />
+                <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/60">
+                  <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-400 shadow-md" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                
-                {/* <DropdownMenuItem asChild>
-                  <Link to="/profile" className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    Profile
-                  </Link>
-                </DropdownMenuItem> */}
 
                 <DropdownMenuItem asChild>
                   <Link to="/settings" className="flex items-center gap-2">
@@ -206,13 +197,13 @@ function DashboardLayout() {
           </div>
         </header>
 
-        {/* Page content (scrollable) */}
+        {/* Page content */}
         <main className="flex-1 overflow-y-auto p-6">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="bg-white/70 backdrop-blur-lg border border-slate-200/50 rounded-2xl shadow-sm p-6"
+            transition={{ duration: 0.35 }}
+            className="bg-white/60 backdrop-blur-lg border border-slate-200/50 rounded-2xl shadow-xl shadow-slate-300/20 p-8"
           >
             <Outlet />
           </motion.div>
