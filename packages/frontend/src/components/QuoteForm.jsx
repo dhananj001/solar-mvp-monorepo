@@ -15,6 +15,8 @@ function QuoteForm({ onSubmit, initialData }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   // Prefill data in edit mode
   useEffect(() => {
     if (initialData) {
@@ -32,9 +34,12 @@ function QuoteForm({ onSubmit, initialData }) {
     const fetchCustomers = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('/api/customers', {
+        const res = await axios.get(`${API_BASE_URL}/api/customers`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        // const res = await axios.get('/api/customers', {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // });
         setCustomers(res.data);
       } catch (err) {
         console.error('Failed to fetch customers', err);

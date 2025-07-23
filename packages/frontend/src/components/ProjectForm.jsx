@@ -22,6 +22,9 @@ function ProjectForm({ project, onSubmit, onCancel }) {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
   // Populate form when project prop changes (Edit mode)
   useEffect(() => {
     if (project) {
@@ -37,9 +40,12 @@ function ProjectForm({ project, onSubmit, onCancel }) {
       try {
         setLoading(true);
         const token = localStorage.getItem('token');
-        const res = await axios.get('/api/customers', {
+        const res = await axios.get(`${API_BASE_URL}/api/customers`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        // const res = await axios.get('/api/customers', {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // });
         setCustomers(res.data);
       } catch (err) {
         setMessage('Error loading customers');

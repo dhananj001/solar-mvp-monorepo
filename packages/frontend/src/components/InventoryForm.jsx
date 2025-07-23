@@ -14,6 +14,9 @@ function InventoryForm({ item, onSubmit, onCancel }) {
   const [threshold, setThreshold] = useState(item?.threshold || '');
   const [message, setMessage] = useState('');
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
   // Sync form values when `item` changes (for editing)
   useEffect(() => {
     if (item) {
@@ -39,16 +42,24 @@ function InventoryForm({ item, onSubmit, onCancel }) {
       }
 
       if (item?._id) {
-        await axios.put(`/api/inventory/${item._id}`, payload, {
+        await axios.put(`${API_BASE_URL}/api/inventory/${item._id}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        // await axios.put(`/api/inventory/${item._id}`, payload, {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // });
         setMessage('Item updated successfully');
       } else {
-        await axios.post('/api/inventory', payload, {
+        await axios.post(`${API_BASE_URL}/api/inventory`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMessage('Item added successfully');
       }
+      //   await axios.post('/api/inventory', payload, {
+      //     headers: { Authorization: `Bearer ${token}` },
+      //   });
+      //   setMessage('Item added successfully');
+      // }
 
       // Reset form
       setItemName('');
