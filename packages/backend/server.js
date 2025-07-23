@@ -2,6 +2,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://solar-mvp-monorepo-fron-git-5ccf04-dhananjays-projects-5ff8247c.vercel.app",
+  "https://solar-mvp-monorepo.vercel.app", // main Vercel domain
+];
 const helmet = require("helmet");
 const customerRoutes = require("./routes/customers");
 const quoteRoutes = require("./routes/quotes");
@@ -19,7 +25,32 @@ const app = express();
 
 // Middleware
 app.use(helmet()); // Secure HTTP headers (latest helmet 8.0.0 features)
-app.use(cors({ origin: "http://localhost:5173" })); // Allow Vite frontend
+// app.use(cors({ origin: "http://localhost:5173" })); // Allow Vite frontend
+// app.use(
+//   cors({
+//     origin: allowedOrigins,
+//     credentials: true,
+//   })
+// );
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "http://localhost:5173",
+        "https://solar-mvp-monorepo-fron-git-5ccf04-dhananjays-projects-5ff8247c.vercel.app",
+        "https://solar-mvp-monorepo.vercel.app",
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json()); // Parse JSON bodies
 
 // Debug: Log MONGO_URI
@@ -42,12 +73,12 @@ mongoose
 app.use("/api/auth", authRoutes); //(no authMiddleware)
 
 // Protected routes
-app.use('/api/customers',  customerRoutes);
-app.use('/api/quotes',  quoteRoutes);
-app.use('/api/subsidies',  subsidyRoutes);
-app.use('/api/projects',  projectRoutes);
-app.use('/api/inventory',  inventoryRoutes);
-app.use('/api/dashboard',  dashboardRoutes);
+app.use("/api/customers", customerRoutes);
+app.use("/api/quotes", quoteRoutes);
+app.use("/api/subsidies", subsidyRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/inventory", inventoryRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 // Test route
 app.get("/api/test", (req, res) => {
