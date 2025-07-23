@@ -62,14 +62,20 @@ function QuoteForm({ onSubmit, initialData }) {
       const token = localStorage.getItem('token');
       if (initialData && initialData._id) {
         // Update existing quote
-        await axios.put(`/api/quotes/${initialData._id}`, formData, {
+        await axios.put(`${API_BASE_URL}/api/quotes/${initialData._id}`, formData, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        // await axios.put(`/api/quotes/${initialData._id}`, formData, {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // });
       } else {
         // Create new quote
-        await axios.post('/api/quotes', formData, {
+        await axios.post(`${API_BASE_URL}/api/quotes`, formData, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        // await axios.post('/api/quotes', formData, {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // });
       }
 
       setFormData({

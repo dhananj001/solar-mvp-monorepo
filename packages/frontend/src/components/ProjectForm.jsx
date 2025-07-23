@@ -66,14 +66,20 @@ function ProjectForm({ project, onSubmit, onCancel }) {
         milestones: milestones ? milestones.split(',').map((m) => m.trim()) : [],
       };
       if (project?._id) {
-        await axios.put(`/api/projects/${project._id}`, payload, {
+        await axios.put(`${API_BASE_URL}/api/projects/${project._id}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        // await axios.put(`/api/projects/${project._id}`, payload, {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // });
         setMessage('Project updated successfully.');
       } else {
-        await axios.post('/api/projects', payload, {
+        await axios.post(`${API_BASE_URL}/api/projects`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        // await axios.post('/api/projects', payload, {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // });
         setMessage('Project added successfully.');
       }
       setCustomerId('');
