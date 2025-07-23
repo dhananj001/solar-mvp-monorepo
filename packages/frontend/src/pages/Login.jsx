@@ -6,12 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { Copy, Check } from "lucide-react";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [copiedField, setCopiedField] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -118,13 +120,15 @@ function Login() {
             </a>
           </p> */}
           <p className="mt-6 text-center text-sm text-gray-600 max-w-sm mx-auto">
-            <strong className="font-semibold text-gray-800">Demo Login:</strong>{" "}
-            <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-900">
+            <strong className="font-semibold text-gray-800">Login:</strong>{" "}
+            <span className="font-mono bg-gray-100 px-2  rounded text-gray-900 inline-flex items-center">
               infy@demo.com
+              <CopyIcon text="infy@demo.com" field="email" />
             </span>{" "}
             | Password:{" "}
-            <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-900">
+            <span className="font-mono bg-gray-100 px-2  rounded text-gray-900 inline-flex items-center">
               1234567890
+              <CopyIcon text="1234567890" field="password" />
             </span>
           </p>
         </CardContent>
