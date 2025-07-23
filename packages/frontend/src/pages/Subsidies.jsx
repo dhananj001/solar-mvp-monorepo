@@ -19,11 +19,13 @@ function Subsidies() {
   const [error, setError] = useState('');
   const [chartData, setChartData] = useState([]);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const fetchSubsidies = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const res = await axios.get('/api/subsidies', {
+      const res = await axios.get(`${API_BASE_URL}/api/subsidies`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSubsidies(res.data);
@@ -64,7 +66,7 @@ function Subsidies() {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`/api/subsidies/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/subsidies/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchSubsidies();

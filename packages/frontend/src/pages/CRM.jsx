@@ -77,11 +77,13 @@ export default function CRM() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const fetchCustomers = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const { data } = await axios.get('/api/customers', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/customers`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCustomers(data);
@@ -110,7 +112,7 @@ export default function CRM() {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`/api/customers/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/customers/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchCustomers();

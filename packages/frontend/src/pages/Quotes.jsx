@@ -14,13 +14,15 @@ function Quotes() {
   const [error, setError] = useState('');
   const [selectedQuote, setSelectedQuote] = useState(null); // For edit mode
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const fetchData = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
       const [quotesRes, customersRes] = await Promise.all([
-        axios.get('/api/quotes', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('/api/customers', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/quotes`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/customers`, { headers: { Authorization: `Bearer ${token}` } }),
       ]);
       setQuotes(quotesRes.data);
       setCustomers(customersRes.data);
@@ -58,7 +60,7 @@ function Quotes() {
     if (!window.confirm('Are you sure you want to delete this quote?')) return;
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`/api/quotes/${quoteId}`, {
+      await axios.delete(`${API_BASE_URL}/api/quotes/${quoteId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchData(); // Refresh list

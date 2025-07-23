@@ -77,13 +77,15 @@ function Projects() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const fetchData = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
       const [projectsRes, customersRes] = await Promise.all([
-        axios.get('/api/projects', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('/api/customers', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/projects`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/customers`, { headers: { Authorization: `Bearer ${token}` } }),
       ]);
       setProjects(projectsRes.data);
       setFilteredProjects(projectsRes.data);
@@ -114,7 +116,7 @@ function Projects() {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`/api/projects/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/projects/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchData();
@@ -260,12 +262,12 @@ function Projects() {
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button
-                            variant="destructive"
-                            size="sm"
-                            className="bg-red-500 hover:bg-red-600 text-white"
-                          >
-                            <Trash2 className="h-4 w-4 mr-1" /> Delete
-                          </Button>
+                                variant="destructive"
+                                size="sm"
+                                className="bg-red-500 hover:bg-red-600 text-white"
+                              >
+                                <Trash2 className="h-4 w-4 mr-1" /> Delete
+                              </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>

@@ -67,11 +67,13 @@ export default function Inventory() {
   const [error, setError] = useState("");
   const [chartData, setChartData] = useState([]);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const fetchItems = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const res = await axios.get("/api/inventory", {
+      const res = await axios.get(`${API_BASE_URL}/api/inventory`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setItems(res.data);
@@ -109,7 +111,7 @@ export default function Inventory() {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`/api/inventory/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/inventory/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchItems();
