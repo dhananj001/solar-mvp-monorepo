@@ -34,4 +34,29 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// PUT update a quote by ID
+router.put('/:id', async (req, res) => {
+  try {
+    const updatedQuote = await Quote.findByIdAndUpdate(req.params.id, req.body, {
+      new: true, // Return the updated document
+      runValidators: true, // Ensure validation rules are applied
+    });
+    if (!updatedQuote) return res.status(404).json({ message: 'Quote not found' });
+    res.json(updatedQuote);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// DELETE a quote by ID
+router.delete('/:id', async (req, res) => {
+  try {
+    const deletedQuote = await Quote.findByIdAndDelete(req.params.id);
+    if (!deletedQuote) return res.status(404).json({ message: 'Quote not found' });
+    res.json({ message: 'Quote deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

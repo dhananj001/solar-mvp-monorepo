@@ -56,8 +56,8 @@ const seedCustomers = async () => {
       type: "residential",
     };
 
-    // Generate 29 fake customers
-    const fakeCustomers = Array.from({ length: 29 }).map(() => ({
+    // Generate 15 fake customers
+    const fakeCustomers = Array.from({ length: 15 }).map(() => ({
       name: getRandomName(),
       contact: getIndianMobileNumber(),
       energyNeeds: faker.number.int({ min: 100, max: 5000 }),
