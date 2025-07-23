@@ -41,7 +41,10 @@ function Dashboard() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const insightsRes = await axios.get('/api/dashboard/insights');
+        // const insightsRes = await axios.get('/api/dashboard/insights');
+        
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const insightsRes = await axios.get(`${API_BASE_URL}/api/dashboard/insights`);
         setInsights(insightsRes.data);
 
         const customersRes = await axios.get('/api/customers', {
