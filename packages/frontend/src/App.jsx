@@ -6,22 +6,29 @@ import Quotes from '@/pages/Quotes';
 import Subsidies from '@/pages/Subsidies';
 import Projects from '@/pages/Projects';
 import Inventory from '@/pages/Inventory';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route element={<DashboardLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/crm" element={<CRM />} />
-          <Route path="/quotes" element={<Quotes />} />
-          <Route path="/subsidies" element={<Subsidies />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/" element={<Dashboard />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/crm" element={<CRM />} />
+            <Route path="/quotes" element={<Quotes />} />
+            <Route path="/subsidies" element={<Subsidies />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/" element={<Dashboard />} />
+          </Route>
         </Route>
       </Routes>
     </Router>
