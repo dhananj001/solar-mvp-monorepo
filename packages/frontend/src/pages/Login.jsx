@@ -18,7 +18,13 @@ function Login() {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post("/api/auth/login", { email, password });
+      // const res = await axios.post("/api/auth/login", { email, password });
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+        email,
+        password,
+      });
+
       localStorage.setItem("token", res.data.token);
       setMessage("Login successful");
       navigate("/dashboard");
