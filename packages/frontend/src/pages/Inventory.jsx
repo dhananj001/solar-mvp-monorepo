@@ -297,43 +297,44 @@ export default function Inventory() {
 
       {/* Stock Levels Chart */}
       <TremorCard className="border-none bg-white rounded-xl p-6 shadow-sm max-w-4xl mx-auto">
-  <div className="flex items-center justify-between">
-    <Text className="text-lg font-semibold text-gray-800">
-      Stock Overview
-    </Text>
-  </div>
+        <div className="flex items-center justify-between">
+          <Text className="text-lg font-semibold text-gray-800">
+            Stock Overview
+          </Text>
+        </div>
 
-  <div className="w-full">
-    {/* Inner wrapper to constrain chart width but keep full width container */}
-    <div
-      className="mx-auto"
-      style={{ maxWidth: chartData.length === 1 ? 300 : "100%" }}
-    >
-      <BarChart
-        data={chartData}
-        index="name"
-        categories={["Stock Level", "Low Stock"]}
-        colors={["slate", "rose"]}
-        valueFormatter={(value) => `${value} units`}
-        className="h-64 mt-6"
-        yAxisWidth={60}
-        customTooltip={({ payload }) => {
-          if (!payload?.length) return null;
-          const { name, value } = payload[0].data;
-          return (
-            <div className="p-3 rounded-lg bg-white shadow border border-gray-100">
-              <p className="text-sm font-semibold">{name}</p>
-              <p className="text-xs text-gray-500">
-                Stock Level: {value} units
-              </p>
-            </div>
-          );
-        }}
-      />
-    </div>
-  </div>
-</TremorCard>
-
+        <div className="w-full">
+          {/* Inner wrapper to constrain chart width but keep full width container */}
+          <div
+            className="mx-auto"
+            style={{ maxWidth: chartData.length === 1 ? 300 : "100%" }}
+          >
+            <BarChart
+              data={chartData}
+              index="name"
+              categories={["Stock Level", "Low Stock"]}
+              colors={["slate", "rose"]}
+              valueFormatter={(value) => `${value} units`}
+              className="h-64 mt-6"
+              yAxisWidth={60}
+              customTooltip={({ payload }) => {
+                if (!payload?.length) return null;
+                const data = payload[0].data || {};
+                const { name = "", value = "" } = data;
+                if (!name) return null; // no meaningful data
+                return (
+                  <div className="p-3 rounded-lg bg-white shadow border border-gray-100">
+                    <p className="text-sm font-semibold">{name}</p>
+                    <p className="text-xs text-gray-500">
+                      Stock Level: {value} units
+                    </p>
+                  </div>
+                );
+              }}
+            />
+          </div>
+        </div>
+      </TremorCard>
     </div>
   );
 }

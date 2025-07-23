@@ -1,8 +1,8 @@
-import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { Outlet, useLocation, Link, useNavigate } from "react-router-dom";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { User } from "lucide-react";
 
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,9 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Separator } from '@/components/ui/separator';
-
+} from "@/components/ui/dropdown-menu";
 import {
   Home,
   Users,
@@ -20,212 +18,176 @@ import {
   DollarSign,
   Calendar,
   Box,
-  Menu,
   Bell,
-  ChevronsLeft,
-  ChevronsRight,
   Settings as SettingsIcon,
   LogOut as LogOutIcon,
-} from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { useState } from "react";
 
-// ---------- Utility ----------
 function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-// ---------- Layout ----------
 export default function DashboardLayout() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isCompact, setIsCompact] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const [hoverIndex, setHoverIndex] = useState(null);
 
-  const navItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/crm', label: 'Customers', icon: Users },
-    { href: '/quotes', label: 'Quotes', icon: Calculator },
+  const dockItems = [
+    { href: "/dashboard", label: "Dashboard", icon: Home },
+    { href: "/crm", label: "CRM", icon: Users },
+    { href: "/quotes", label: "Quotes", icon: Calculator },
     // { href: '/subsidies', label: 'Subsidies', icon: DollarSign },
-    { href: '/projects', label: 'Projects', icon: Calendar },
-    { href: '/inventory', label: 'Inventory', icon: Box },
+    { href: "/projects", label: "Projects", icon: Calendar },
+    { href: "/inventory", label: "Inventory", icon: Box },
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
-  // Close sidebar on large screens
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsSidebarOpen(false);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const getScale = (index) => {
+    if (hoverIndex === null) return 1;
+    const distance = Math.abs(hoverIndex - index);
+    if (distance === 0) return 1.3;
+    if (distance === 1) return 1.15;
+    if (distance === 2) return 1.05;
+    return 1;
+  };
 
   return (
-    <div className="h-screen w-screen flex bg-gray-50 overflow-hidden">
-      {/* ---------- Mobile Overlay ---------- */}
-      {isSidebarOpen && (
+    <div className="h-screen w-screen flex flex-col bg-gray-100 text-black">
+      <main className="flex-1 overflow-y-auto pb-28">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="p-4 sm:p-6"
+        >
+          <Outlet />
+        </motion.div>
+      </main>
+
+      {/* ---------- macOS Style Dock ---------- */}
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
         <div
-          className="fixed inset-0 bg-black/30 z-30 md:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
-
-      {/* ---------- Sidebar ---------- */}
-      <aside
-        className={cn(
-          'flex flex-col shrink-0 bg-white border-r border-gray-200 transition-all duration-300 z-40 fixed md:relative h-full',
-          isCompact ? 'w-20' : 'w-64',
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-        )}
-      >
-        {/* Logo */}
-        <div className="flex items-center justify-between px-4 py-3 h-16 shrink-0">
-          <div className="flex items-center">
-            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-blue-700 text-white font-bold">
-              T
-            </div>
-            {!isCompact && (
-              <span className="ml-3 text-base sm:text-lg font-semibold text-gray-900">
-                Tuljai Traders
-              </span>
-            )}
-          </div>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setIsSidebarOpen(false)}
-          >
-            <Menu className="h-5 w-5 text-gray-600" />
-          </Button>
-        </div>
-
-        <Separator />
-
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-2 py-4">
-          <ul className="space-y-1">
-            {navItems.map(({ href, label, icon: Icon }) => {
-              const active = location.pathname === href;
-              return (
-                <li key={href}>
-                  <Link
-                    to={href}
-                    className={cn(
-                      'flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors',
-                      active
-                        ? 'bg-blue-50 text-blue-700'
-                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
-                      isCompact && 'justify-center'
-                    )}
-                    onClick={() => window.innerWidth < 768 && setIsSidebarOpen(false)}
-                  >
-                    <Icon
-                      className={cn(
-                        'h-5 w-5 shrink-0',
-                        active ? 'text-blue-600' : 'text-gray-400'
-                      )}
-                    />
-                    {!isCompact && (
-                      <span className="hidden sm:inline">{label}</span>
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-
-        {/* Collapse toggle */}
-        <div className="shrink-0 border-t border-gray-200 p-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className={cn(
-              'w-full flex items-center justify-center text-gray-500 hover:bg-gray-100',
-              isCompact && 'px-0'
-            )}
-            onClick={() => setIsCompact(!isCompact)}
-          >
-            {isCompact ? (
-              <ChevronsRight className="h-5 w-5" />
-            ) : (
-              <>
-                <ChevronsLeft className="h-5 w-5 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Collapse</span>
-              </>
-            )}
-          </Button>
-        </div>
-      </aside>
-
-      {/* ---------- Main ---------- */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Header */}
-        <header className="flex items-center justify-between h-16 px-4 sm:px-6 shrink-0 bg-white border-b border-gray-200">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setIsSidebarOpen(true)}
-          >
-            <Menu className="h-6 w-6 text-gray-700" />
-          </Button>
-
-          <div className="flex items-center gap-2 sm:gap-3 ml-auto">
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5 text-gray-600" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
-            </Button>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="p-0">
-                  <div className="h-9 w-9 rounded-full bg-gray-300" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-
-                <DropdownMenuItem asChild>
-                  <Link to="/settings" className="flex items-center gap-2">
-                    <SettingsIcon className="h-4 w-4" />
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem
-                  className="flex items-center gap-2 cursor-pointer"
-                  onClick={handleLogout}
+          className="flex items-end gap-2 sm:gap-3 px-4 py-2 rounded-3xl 
+                        bg-slate-800/60 backdrop-blur-xl shadow-lg
+                        border border-white/20 transition-all duration-300 hover:scale-[1.02]"
+        >
+          {dockItems.map(({ href, icon: Icon, label }, index) => {
+            const active = location.pathname === href;
+            return (
+              <Link
+                key={href}
+                to={href}
+                className="flex flex-col items-center gap-1 w-14 sm:w-16 group relative"
+                onMouseEnter={() => setHoverIndex(index)}
+                onMouseLeave={() => setHoverIndex(null)}
+              >
+                {/* Icon */}
+                <motion.div
+                  animate={{ scale: getScale(index) }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className={cn(
+                    "flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl transition-colors duration-300 shadow-lg",
+                    active
+                      ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white"
+                      : "text-white/90 hover:bg-white/10"
+                  )}
                 >
-                  <LogOutIcon className="h-4 w-4" />
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </header>
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                </motion.div>
+                <span className="text-[10px] sm:text-xs text-white/80 font-medium mt-1">
+                  {label}
+                </span>
+              </Link>
+            );
+          })}
 
-        {/* Page */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 sm:p-6"
+          {/* Notifications */}
+          <div
+            className="flex flex-col items-center gap-1 w-14 sm:w-16 group relative"
+            onMouseEnter={() => setHoverIndex(dockItems.length)}
+            onMouseLeave={() => setHoverIndex(null)}
           >
-            <Outlet />
-          </motion.div>
-        </main>
+            <motion.button
+              animate={{ scale: getScale(dockItems.length) }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="relative flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl text-white/90 hover:bg-white/10 shadow-lg"
+            >
+              <Bell className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+            </motion.button>
+
+            {/* Tooltip */}
+            <motion.div
+              initial={{ opacity: 0, y: 5 }}
+              whileHover={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute bottom-14 px-2 py-1 text-xs bg-black text-white rounded-md opacity-0 group-hover:opacity-100"
+            >
+              No new alerts
+            </motion.div>
+
+            <span className="text-[10px] sm:text-xs text-white/80 font-medium mt-1">
+              Alerts
+            </span>
+          </div>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div
+                className="flex flex-col items-center gap-1 w-14 sm:w-16 group relative cursor-pointer"
+                onMouseEnter={() => setHoverIndex(dockItems.length + 1)}
+                onMouseLeave={() => setHoverIndex(null)}
+              >
+                <motion.button
+                  animate={{ scale: getScale(dockItems.length + 1) }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 shadow-md
+             ring-1 ring-white/30 hover:ring-white/50 transition flex items-center justify-center"
+                >
+                  <User className="w-6 h-6 text-white" />
+                </motion.button>
+                <span className="text-[10px] sm:text-xs text-white/80 font-medium mt-1 select-none">
+                  Profile
+                </span>
+              </div>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent
+              align="end"
+              className="w-48 bg-white/30 backdrop-blur-md rounded-2xl border border-white/30 shadow-xl p-2
+               animate-fade-in-down"
+              sideOffset={6}
+            >
+              <DropdownMenuLabel className="text-gray-800 font-semibold select-none px-3 py-2">
+                My Account
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="border-white/40" />
+              <DropdownMenuItem asChild>
+                <Link
+                  to="/settings"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-900 hover:bg-white/40 transition"
+                >
+                  <SettingsIcon className="h-5 w-5" />
+                  Settings
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-900 cursor-pointer
+                 hover:bg-white/40 transition"
+                onClick={handleLogout}
+              >
+                <LogOutIcon className="h-5 w-5" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </div>
   );
