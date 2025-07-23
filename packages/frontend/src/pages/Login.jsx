@@ -41,9 +41,26 @@ function Login() {
   //   e.preventDefault();
   //   navigate("/dashboard");
   // };
+  const handleCopy = (text, field) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(""), 1000);
+  };
+
+  const CopyIcon = ({ text, field }) => (
+    <button
       onClick={() => handleCopy(text, field)}
       className="ml-1 hover:text-blue-600 transition"
       title="Copy"
+      type="button"
+    >
+      {copiedField === field ? (
+        <Check className="w-4 h-4 text-green-600" />
+      ) : (
+        <Copy className="w-4 h-4" />
+      )}
+    </button>
+  );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-blue-50 px-4">
