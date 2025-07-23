@@ -32,10 +32,23 @@ const app = express();
 // Middleware
 app.use(helmet()); // Secure HTTP headers (latest helmet 8.0.0 features)
 // app.use(cors({ origin: "http://localhost:5173" })); // Allow Vite frontend
+// app.use(cors({
+//   origin: allowedOrigins,
+//   credentials: true,
+// }));
+
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // Allow non-browser clients like Postman
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS blocked for origin: ${origin}`));
+    }
+  },
   credentials: true,
 }));
+
 
 app.use(express.json()); // Parse JSON bodies
 
