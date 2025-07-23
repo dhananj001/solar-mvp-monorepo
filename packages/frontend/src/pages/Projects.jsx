@@ -259,10 +259,13 @@ function Projects() {
                           </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="sm">
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Delete
-                              </Button>
+                              <Button
+                            variant="destructive"
+                            size="sm"
+                            className="bg-red-500 hover:bg-red-600 text-white"
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" /> Delete
+                          </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>

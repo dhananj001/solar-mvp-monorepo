@@ -46,7 +46,7 @@ export default function DashboardLayout() {
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/crm', label: 'Customers', icon: Users },
     { href: '/quotes', label: 'Quotes', icon: Calculator },
-    { href: '/subsidies', label: 'Subsidies', icon: DollarSign },
+    // { href: '/subsidies', label: 'Subsidies', icon: DollarSign },
     { href: '/projects', label: 'Projects', icon: Calendar },
     { href: '/inventory', label: 'Inventory', icon: Box },
   ];
