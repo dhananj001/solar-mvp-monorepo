@@ -1,41 +1,32 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const cors = require("cors");
+const express = require('express');
+const path = require('path');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const helmet = require('helmet');
 
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://solar-mvp-monorepo-fron-git-5ccf04-dhananjays-projects-5ff8247c.vercel.app',
-  'https://solar-mvp-monorepo.vercel.app' // main Vercel domain
-];
-const helmet = require("helmet");
-const customerRoutes = require("./routes/customers");
-const quoteRoutes = require("./routes/quotes");
-const subsidyRoutes = require("./routes/subsidies");
-const projectRoutes = require("./routes/projects");
-const inventoryRoutes = require("./routes/inventory");
-const dashboardRoutes = require("./routes/dashboard");
-const authRoutes = require("./routes/auth");
-const authMiddleware = require("./middleware/auth");
+const customerRoutes = require('./routes/customers');
+const quoteRoutes = require('./routes/quotes');
+const subsidyRoutes = require('./routes/subsidies');
+const projectRoutes = require('./routes/projects');
+const inventoryRoutes = require('./routes/inventory');
+const dashboardRoutes = require('./routes/dashboard');
+const authRoutes = require('./routes/auth');
 
 // Load .env from root
-dotenv.config({ path: require("path").resolve(__dirname, "../../.env") });
+dotenv.config({ path: require('path').resolve(__dirname, '../../.env') });
 
 const app = express();
 
-// const allowedOrigins = [
-//   'http://localhost:5173',
-//   'https://solar-mvp-monorepo-frontend-r4p3vohi8.vercel.app',
-//   'https://solar-mvp-monorepo.vercel.app',
-// ];
+// Allowed origins for CORS
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://solar-mvp-monorepo.vercel.app',
+  'https://solar-mvp-monorepo-fron-git-5ccf04-dhananjays-projects-5ff8247c.vercel.app'
+];
 
 // Middleware
-app.use(helmet()); // Secure HTTP headers (latest helmet 8.0.0 features)
-// app.use(cors({ origin: "http://localhost:5173" })); // Allow Vite frontend
-// app.use(cors({
-//   origin: allowedOrigins,
-//   credentials: true,
-// }));
+app.use(helmet()); // Secure HTTP headers
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -48,7 +39,6 @@ app.use(cors({
   },
   credentials: true,
 }));
-
 
 app.use(express.json()); // Parse JSON bodies
 
@@ -69,22 +59,30 @@ mongoose
   });
 
 // Unprotected routes
-app.use("/api/auth", authRoutes); //(no authMiddleware)
+app.use("/api/auth", authRoutes); // No authMiddleware
 
 // Protected routes
-app.use('/api/customers',  customerRoutes);
-app.use('/api/quotes',  quoteRoutes);
-app.use('/api/subsidies',  subsidyRoutes);
-app.use('/api/projects',  projectRoutes);
-app.use('/api/inventory',  inventoryRoutes);
-app.use('/api/dashboard',  dashboardRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/quotes', quoteRoutes);
+app.use('/api/subsidies', subsidyRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/inventory', inventoryRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// Handle client-side routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
 
 // Test route
 app.get("/api/test", (req, res) => {
   res.json({ message: "Hello, Solar! Backend is running." });
 });
 
-// Global error handler (latest Express 4.19.x practice)
+// Global error handler
 app.use((err, req, res, next) => {
   console.error("Global error:", err.stack); // Log for debugging
   res.status(500).json({
