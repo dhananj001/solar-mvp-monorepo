@@ -14,25 +14,30 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      setLoading(true);
-      // const res = await axios.post("/api/auth/login", { email, password });
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
-        email,
-        password,
-      });
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     setLoading(true);
+  //     // const res = await axios.post("/api/auth/login", { email, password });
+  //     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  //     const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+  //       email,
+  //       password,
+  //     });
 
-      localStorage.setItem("token", res.data.token);
-      setMessage("Login successful");
-      navigate("/dashboard");
-    } catch (err) {
-      setMessage(err.response?.data?.message || "Error logging in");
-    } finally {
-      setLoading(false);
-    }
+  //     localStorage.setItem("token", res.data.token);
+  //     setMessage("Login successful");
+  //     navigate("/dashboard");
+  //   } catch (err) {
+  //     setMessage(err.response?.data?.message || "Error logging in");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate("/dashboard");
   };
 
   return (
