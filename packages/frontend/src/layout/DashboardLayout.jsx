@@ -89,11 +89,11 @@ export default function DashboardLayout() {
         <div className="flex items-center justify-between px-4 py-3 h-16 shrink-0">
           <div className="flex items-center">
             <div className="flex h-9 w-9 items-center justify-center rounded-md bg-blue-700 text-white font-bold">
-              S
+              T
             </div>
             {!isCompact && (
               <span className="ml-3 text-base sm:text-lg font-semibold text-gray-900">
-                Solar Business
+                Tuljai Traders
               </span>
             )}
           </div>
