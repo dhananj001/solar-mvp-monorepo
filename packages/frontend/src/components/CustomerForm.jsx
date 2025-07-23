@@ -1,109 +1,162 @@
-import { useState } from 'react';
-import axios from 'axios';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  CheckCircle,
+  AlertCircle,
+  User,
+  Phone,
+  Zap,
+  Building2,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
-function CustomerForm({ customer, onSubmit, onCancel }) {
-  const [name, setName] = useState(customer?.name || '');
-  const [contact, setContact] = useState(customer?.contact || '');
-  const [energyNeeds, setEnergyNeeds] = useState(customer?.energyNeeds || '');
-  const [type, setType] = useState(customer?.type || 'residential');
-  const [message, setMessage] = useState('');
+export default function CustomerForm({ customer, onSubmit, onCancel }) {
+  const [name, setName] = useState(customer?.name ?? "");
+  const [contact, setContact] = useState(customer?.contact ?? "");
+  const [energyNeeds, setEnergyNeeds] = useState(customer?.energyNeeds ?? "");
+  const [type, setType] = useState(customer?.type ?? "residential");
+  const [msg, setMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const payload = { name, contact, energyNeeds: Number(energyNeeds) || 0, type };
-      const token = localStorage.getItem('token');
-      if (customer) {
+      const token = localStorage.getItem("token");
+      const payload = {
+        name,
+        contact,
+        energyNeeds: Number(energyNeeds) || 0,
+        type,
+      };
+
+      if (customer?._id) {
         await axios.put(`/api/customers/${customer._id}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setMessage('Customer updated');
+        setMsg("Updated successfully");
       } else {
-        await axios.post('/api/customers', payload, {
+        await axios.post("/api/customers", payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setMessage('Customer added');
+        setMsg("Created successfully");
       }
-      setName('');
-      setContact('');
-      setEnergyNeeds('');
-      setType('residential');
-      onSubmit();
-    } catch (err) {
-      setMessage('Error saving customer');
+
+      setTimeout(() => {
+        setName("");
+        setContact("");
+        setEnergyNeeds("");
+        setType("residential");
+        onSubmit();
+      }, 1200);
+    } catch {
+      setMsg("Error saving customer");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Card className="max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle>{customer ? 'Edit Customer' : 'Add Customer'}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+    <Card className="border-0 shadow-none bg-transparent">
+      <CardContent className="p-0">
+        <form onSubmit={handleSave} className="grid gap-4 md:grid-cols-2">
+          {/* Name */}
+          <div className="space-y-1.5">
+            <Label className="flex items-center gap-2">
+              <User className="h-4 w-4" /> Full Name
+            </Label>
             <Input
-              id="name"
-              type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              placeholder="Uday Kumar"
               required
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="contact">Contact</Label>
+
+          {/* Contact */}
+          <div className="space-y-1.5">
+            <Label className="flex items-center gap-2">
+              <Phone className="h-4 w-4" /> Contact
+            </Label>
             <Input
-              id="contact"
-              type="text"
               value={contact}
               onChange={(e) => setContact(e.target.value)}
+              placeholder="eg. 9898989898"
               required
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="energyNeeds">Energy Needs (kWh/month)</Label>
+
+          {/* Energy Needs */}
+          <div className="space-y-1.5">
+            <Label className="flex items-center gap-2">
+              <Zap className="h-4 w-4" /> Energy Needs (kWh/month)
+            </Label>
             <Input
-              id="energyNeeds"
               type="number"
+              min="0"
               value={energyNeeds}
               onChange={(e) => setEnergyNeeds(e.target.value)}
+              placeholder="450"
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="type">Type</Label>
+
+          {/* Type */}
+          <div className="space-y-1.5">
+            <Label className="flex items-center gap-2">
+              <Building2 className="h-4 w-4" /> Type
+            </Label>
             <select
-              id="type"
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
             >
               <option value="residential">Residential</option>
               <option value="commercial">Commercial</option>
             </select>
           </div>
-          <div className="flex space-x-2">
-            <Button type="submit" className="w-full">{customer ? 'Update' : 'Add'} Customer</Button>
-            {customer && (
-              <Button type="button" variant="outline" onClick={onCancel} className="w-full">
+
+          {/* Actions */}
+          <div className="md:col-span-2 flex gap-2 pt-2">
+            <Button type="submit" disabled={loading} className="flex-1">
+              {loading ? "Saving…" : customer?._id ? "Update" : "Create"}
+            </Button>
+
+            {onCancel && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                disabled={loading}
+                className="flex-1"
+              >
                 Cancel
               </Button>
             )}
           </div>
+
+          {msg && (
+            <div
+              className={cn(
+                "md:col-span-2 flex items-center gap-2 rounded-md p-3 text-sm font-medium",
+                msg.includes("success")
+                  ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                  : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+              )}
+            >
+              {msg.includes("success") ? (
+                <CheckCircle size={16} />
+              ) : (
+                <AlertCircle size={16} />
+              )}
+              {msg}
+            </div>
+          )}
         </form>
-        {message && (
-          <p className={cn('mt-4 text-sm', message.includes('Error') ? 'text-destructive' : 'text-green-600')}>
-            {message}
-          </p>
-        )}
       </CardContent>
     </Card>
   );
 }
-
-export default CustomerForm;

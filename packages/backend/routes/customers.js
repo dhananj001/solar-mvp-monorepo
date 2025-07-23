@@ -12,6 +12,24 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET all customers with pagination support
+// router.get('/', async (req, res) => {
+//   try {
+//     const skip = parseInt(req.query.skip) || 0;
+//     const limit = parseInt(req.query.limit) || 15;
+
+//     const customers = await Customer.find()
+//       .skip(skip)
+//       .limit(limit)
+//       .sort({ name: 1 }); // optional sorting
+
+//     res.json(customers);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
+
+
 // POST add a customer
 router.post('/', async (req, res) => {
   try {

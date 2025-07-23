@@ -7,7 +7,9 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "build": "echo 'Backend built'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "node seeder.js"
+
   },
   "keywords": [],
   "author": "",
@@ -22,6 +24,7 @@
     "mongoose": "^8.16.4"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
     "nodemon": "^3.1.10"
   }
 }

@@ -27,7 +27,7 @@ import {
   Settings as SettingsIcon,
   LogOut as LogOutIcon,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 // ---------- Utility ----------
@@ -44,7 +44,7 @@ export default function DashboardLayout() {
 
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/crm', label: 'CRM', icon: Users },
+    { href: '/crm', label: 'Customers', icon: Users },
     { href: '/quotes', label: 'Quotes', icon: Calculator },
     { href: '/subsidies', label: 'Subsidies', icon: DollarSign },
     { href: '/projects', label: 'Projects', icon: Calendar },
@@ -56,24 +56,43 @@ export default function DashboardLayout() {
     navigate('/login');
   };
 
+  // Close sidebar on large screens
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsSidebarOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <div className="h-screen w-screen flex bg-gray-50 overflow-hidden">
+      {/* ---------- Mobile Overlay ---------- */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-30 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* ---------- Sidebar ---------- */}
       <aside
         className={cn(
-          'flex flex-col shrink-0 bg-white border-r border-gray-200 transition-all duration-300 z-40',
+          'flex flex-col shrink-0 bg-white border-r border-gray-200 transition-all duration-300 z-40 fixed md:relative h-full',
           isCompact ? 'w-20' : 'w-64',
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >
         {/* Logo */}
-        <div className="flex items-center justify-between px-5 py-4 h-16 shrink-0">
+        <div className="flex items-center justify-between px-4 py-3 h-16 shrink-0">
           <div className="flex items-center">
             <div className="flex h-9 w-9 items-center justify-center rounded-md bg-blue-700 text-white font-bold">
               S
             </div>
             {!isCompact && (
-              <span className="ml-3 text-lg font-semibold text-gray-900">
+              <span className="ml-3 text-base sm:text-lg font-semibold text-gray-900">
                 Solar Business
               </span>
             )}
@@ -92,7 +111,7 @@ export default function DashboardLayout() {
         <Separator />
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-3 py-4">
+        <nav className="flex-1 overflow-y-auto px-2 py-4">
           <ul className="space-y-1">
             {navItems.map(({ href, label, icon: Icon }) => {
               const active = location.pathname === href;
@@ -107,6 +126,7 @@ export default function DashboardLayout() {
                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
                       isCompact && 'justify-center'
                     )}
+                    onClick={() => window.innerWidth < 768 && setIsSidebarOpen(false)}
                   >
                     <Icon
                       className={cn(
@@ -114,7 +134,9 @@ export default function DashboardLayout() {
                         active ? 'text-blue-600' : 'text-gray-400'
                       )}
                     />
-                    {!isCompact && <span>{label}</span>}
+                    {!isCompact && (
+                      <span className="hidden sm:inline">{label}</span>
+                    )}
                   </Link>
                 </li>
               );
@@ -123,7 +145,7 @@ export default function DashboardLayout() {
         </nav>
 
         {/* Collapse toggle */}
-        <div className="shrink-0 border-t border-gray-200 p-3">
+        <div className="shrink-0 border-t border-gray-200 p-2">
           <Button
             variant="ghost"
             size="sm"
@@ -137,8 +159,8 @@ export default function DashboardLayout() {
               <ChevronsRight className="h-5 w-5" />
             ) : (
               <>
-                <ChevronsLeft className="h-5 w-5 mr-2" />
-                Collapse
+                <ChevronsLeft className="h-5 w-5 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Collapse</span>
               </>
             )}
           </Button>
@@ -148,7 +170,7 @@ export default function DashboardLayout() {
       {/* ---------- Main ---------- */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="flex items-center justify-between h-16 px-6 shrink-0 bg-white border-b border-gray-200">
+        <header className="flex items-center justify-between h-16 px-4 sm:px-6 shrink-0 bg-white border-b border-gray-200">
           <Button
             variant="ghost"
             size="icon"
@@ -158,7 +180,7 @@ export default function DashboardLayout() {
             <Menu className="h-6 w-6 text-gray-700" />
           </Button>
 
-          <div className="flex items-center gap-3 ml-auto">
+          <div className="flex items-center gap-2 sm:gap-3 ml-auto">
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5 text-gray-600" />
               <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
@@ -166,7 +188,7 @@ export default function DashboardLayout() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="p-0">
                   <div className="h-9 w-9 rounded-full bg-gray-300" />
                 </Button>
               </DropdownMenuTrigger>
@@ -194,12 +216,12 @@ export default function DashboardLayout() {
         </header>
 
         {/* Page */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white border border-gray-200 rounded-lg shadow-sm p-6"
+            className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 sm:p-6"
           >
             <Outlet />
           </motion.div>
