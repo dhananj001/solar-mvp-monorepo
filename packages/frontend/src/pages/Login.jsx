@@ -41,6 +41,9 @@ function Login() {
   //   e.preventDefault();
   //   navigate("/dashboard");
   // };
+      onClick={() => handleCopy(text, field)}
+      className="ml-1 hover:text-blue-600 transition"
+      title="Copy"
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-blue-50 px-4">
